@@ -21,29 +21,23 @@ fetch('words.txt')
 
 function canMakeWord(letters, word) {
   const letterCounts = {};
-
   for (let char of letters) {
     letterCounts[char] = (letterCounts[char] || 0) + 1;
   }
-
   for (let char of word) {
-    if (!letterCounts[char]) {
-      return false;
-    }
+    if (!letterCounts[char]) return false;
     letterCounts[char]--;
   }
-
   return true;
 }
 
 function getWordPoints(word) {
-  return word.split('').reduce((score, letter) => {
-    return score + (letterPoints[letter] || 0);
-  }, 0);
+  return word.split('').reduce((score, letter) => score + (letterPoints[letter] || 0), 0);
 }
 
 function findWords() {
   const input = document.getElementById('letterInput').value.toUpperCase().replace(/[^A-Z]/g, '');
+  const sortBy = document.getElementById('sortOption').value;
   const resultsDiv = document.getElementById('results');
   resultsDiv.innerHTML = '';
 
@@ -69,16 +63,36 @@ function findWords() {
     return;
   }
 
-  matches.sort((a, b) => b.length - a.length || b.points - a.points);
-
-  const list = document.createElement('ul');
-  for (let match of matches) {
-    const item = document.createElement('li');
-    item.textContent = `${match.word} - ${match.points} pts`;
-    list.appendChild(item);
+  if (sortBy === 'length') {
+    matches.sort((a, b) => b.length - a.length || b.points - a.points);
+  } else {
+    matches.sort((a, b) => b.points - a.points || b.length - a.length);
   }
 
-  resultsDiv.appendChild(list);
+  const scrollBox = document.createElement('div');
+  scrollBox.id = 'results-list';
+
+  let currentGroup = null;
+
+  for (let match of matches) {
+    let groupKey = sortBy === 'length' ? match.length : match.points;
+    let groupLabel = sortBy === 'length'
+      ? `— ${groupKey}-Letter Words —`
+      : `— ${groupKey}-Point Words —`;
+
+    if (currentGroup !== groupKey) {
+      currentGroup = groupKey;
+      const header = document.createElement('h3');
+      header.textContent = groupLabel;
+      scrollBox.appendChild(header);
+    }
+
+    const item = document.createElement('div');
+    item.textContent = `${match.word} - ${match.points} pts`;
+    scrollBox.appendChild(item);
+  }
+
+  resultsDiv.appendChild(scrollBox);
 
   const note = document.createElement('p');
   note.textContent = 'Point totals shown do not account for modifiers';

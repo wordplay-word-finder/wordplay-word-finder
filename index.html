@@ -2,16 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Word Finder</title>
+  <title>Word Play Word Finder</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <h1>Word Finder</h1>
-    <input type="text" id="letterInput" placeholder="Enter letters (e.g., aple)" />
-    <button onclick="findWords()">Find Words</button>
-    <div id="results"></div>
-  </div>
+  <h1>Word Finder</h1>
+  <input type="text" id="letterInput" placeholder="Enter letters (e.g., aple)" />
+  <select id="sortOption">
+    <option value="length">Sort by length</option>
+    <option value="points">Sort by points</option>
+  </select>
+  <button onclick="findWords()">Find Words</button>
+  <div id="results"></div>
+</div>
+
   <script src="script.js"></script>
 </body>
 </html>
